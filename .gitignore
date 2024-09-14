@@ -1,0 +1,10 @@
+/target/
+/test-output/
+/screenshots/
+/logs/
+/extentreports/
+.settings/
+.classpath
+.project
+.sonarlint
+/RemoteSystemsTempFiles/

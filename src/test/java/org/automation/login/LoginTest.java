@@ -2,6 +2,7 @@ package org.automation.login;
 
 import org.automation.basePackage.Base;
 import org.automation.pom.LoginPage;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -38,6 +39,11 @@ public class LoginTest extends Base {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Test
+	public void failTestCase() {
+		Assert.fail("Failed");
 	}
 
 }

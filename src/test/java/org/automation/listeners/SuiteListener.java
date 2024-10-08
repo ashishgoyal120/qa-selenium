@@ -6,12 +6,16 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+
 
 import org.automation.utility.ApplicationConfiguration;
 import org.automation.utility.BrowserFactory;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriver.Options;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ISuite;
 import org.testng.ISuiteListener;
 
@@ -34,16 +38,16 @@ public class SuiteListener implements ISuiteListener {
 
 	@Override
 	public void onFinish(ISuite suite) {
-		closeBrowserDriver(suite);
+		//closeBrowserDriver(suite);
 		performCleanUpActivities(suite);
 
 	}
 
-	private void closeBrowserDriver(ISuite suite) {
-		WebDriver webDriverInstance = (WebDriver) suite.getAttribute("driverForBrowser");
-		webDriverInstance.quit();
-		System.out.println("Closed Browser Window");
-	}
+//	private void closeBrowserDriver(ISuite suite) {
+//		WebDriver webDriverInstance = (WebDriver) suite.getAttribute("driverForBrowser");
+//		webDriverInstance.quit();
+//		System.out.println("Closed Browser Window");
+//	}
 
 	private void performCleanUpActivities(ISuite suite) {
 		suite.removeAttribute("driverForBrowser");
@@ -87,12 +91,16 @@ public class SuiteListener implements ISuiteListener {
 	}
 
 	private void loadBrowserDriverInstance(ISuite suite, ApplicationConfiguration config) {
-		BrowserFactory browserFactory = new BrowserFactory();
-		WebDriver webDriverInstance = browserFactory.getBrowser(config.getBrowserName(), config.getBrowserVersion());
-		webDriverInstance.get(config.getUrl());
-		webDriverInstance.manage().window().maximize();
-		setTimeout(config, webDriverInstance.manage());
-		suite.setAttribute("driverForBrowser", webDriverInstance);
+		String browserList = config.getBrowserName();
+        List<String> browsers = Arrays.asList(browserList.split(","));
+        browsers.parallelStream().forEach(browser -> {
+            WebDriver driver = BrowserFactory.getDriver(browser);
+            driver.get(config.getUrl()); // Example URL, replace with your own
+            driver.manage().window().maximize();
+    		setTimeout(config, driver.manage());
+            System.out.println("Session In SuiteListener : " + Thread.currentThread().getId() + " | Session:  " + ((RemoteWebDriver) driver).getSessionId().toString());
+            suite.setAttribute("driverForBrowser",driver);
+        });
 
 	}
 

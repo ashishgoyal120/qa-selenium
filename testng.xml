@@ -10,7 +10,7 @@
 			class-name="org.automation.listeners.ExecutionListener" />
 	</listeners>
 
-	<test thread-count="5" name="Application">
+	<test name="Application">
 		<classes>
 			<class name="org.automation.login.LoginTest" />
 			<class name="org.automation.logout.LogoutTest" />
